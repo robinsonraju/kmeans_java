@@ -1,8 +1,12 @@
 package edu.sjsu.cs.rr.kmeans_java;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Class to cluster data using KMeans
@@ -12,7 +16,7 @@ import java.io.FileReader;
  */
 public class Kmeans {
 	// Input type
-	private enum InputType {
+	public enum InputType {
 		K("Value of K"), 
 		MAX_ITER("Max Iterations"), 
 		DELTA("Max Iterations"),
@@ -34,12 +38,12 @@ public class Kmeans {
 	}
 
 	// Distance either “euclidean” or “cosine” distance,
-	private enum Distance {
+	public enum Distance {
 		euclidean, cosine
 	};
 
 	// Initialization method
-	private enum InitMethod {
+	public enum InitMethod {
 		random, partition
 	};
 
@@ -55,52 +59,67 @@ public class Kmeans {
 		Kmeans kmeans = new Kmeans();
 		
 		// Validate input data
-		kmeans.validateInputData(args);
+		KmeansInput input = kmeans.validateInputData(args);
+		
+		// Cluster data 
+		kmeans.clusterData(input);
 
 
 	}
 
-	public void validateInputData (String[] args) throws Exception {
+	public KmeansInput validateInputData (String[] args) throws Exception {
 		System.out.println("**** Reading Input parameters ****");
 
 		int k = getInput(args[0], InputType.K, new Integer(0));
-		System.out.println("Number of clusters (Value of k) : " + k);
 
 		int maxIter = getInput(args[1], InputType.MAX_ITER, new Integer(0));
-		System.out.println("Max Iterations : " + maxIter);
 		
 		float delta = getInput(args[2], InputType.DELTA, new Float(0)).floatValue();
-		System.out.println("Delta : " + delta);
 		
 		Distance dist = (Distance) getInput(args[3], InputType.DISTANCE, new Object());
-		System.out.println("Distance : " + dist);
 		
 		InitMethod init = (InitMethod) getInput(args[4], InputType.INIT, new Object());
-		System.out.println("Init : " + init);
 
-		File input = (File) getInput(args[5], InputType.INPUT_FILE,new Object());
-		System.out.println("Input file location : " + input.getAbsolutePath());
-
-		File output = (File) getInput(args[6], InputType.OUTPUT_FILE,new Object());
-		System.out.println("Output file location : " + output.getAbsolutePath());
+		File inputFile = (File) getInput(args[5], InputType.INPUT_FILE,new Object());
+		
+		File outputFile = (File) getInput(args[6], InputType.OUTPUT_FILE,new Object());
 		
 		// int featureCount = getInput(args[7], InputType.FEATURE_COUNT, new Integer(0));
 		int featureCount = 4; 
-		System.out.println("Number of features : " + featureCount);
+		
+		System.out.println("Input is valid.");
+		return new KmeansInput(k, maxIter, delta, dist, init, inputFile, outputFile, featureCount);
+		
 	}
 	
 	/**
 	 * 
 	 */
-	private static void clusterData(
-			final int k, 
-			final int maxIter, 
-			final float delta,
-			final Distance dist, 
-			final InitMethod init, 
-			final File input, 
-			final File output) {
-		//TODO
+	public static void clusterData (KmeansInput input) throws Exception {
+		System.out.println("Input to Kmeans - " + input.toString());
+		
+		int dataCount = 0;
+		
+		// Read Input data 
+		List<String> inputData = new ArrayList<>();
+		try (BufferedReader br = new BufferedReader(new FileReader(input.getInputFile()))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				inputData.add(line);
+			}
+		}
+		dataCount = inputData.size();
+		
+		// Store data into a dataset matrix
+		double dataSet[][] = new double[dataCount][input.getFeatureCount()];
+        
+        for(int i = 0; i < dataCount; ++i) {
+        	StringTokenizer st = new StringTokenizer(inputData.get(i));
+            for(int j = 0; j < input.getFeatureCount(); ++j) {
+            	String token = st.nextToken();
+                dataSet[i][j] = Double.parseDouble(token);
+            }
+        }
 
 	}
 
@@ -118,7 +137,11 @@ public class Kmeans {
 				return (T) Integer.valueOf(input);
 			
 			case DELTA:
-				return (T) Float.valueOf(input);
+				if (Float.valueOf(input).floatValue() > 0) {
+					return (T) Float.valueOf(input);
+				} else {
+					throw new Exception();
+				}
 				
 			case DISTANCE:
 				return (T) Distance.valueOf(input);
