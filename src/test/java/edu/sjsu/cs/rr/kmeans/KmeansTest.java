@@ -1,5 +1,6 @@
-package edu.sjsu.cs.rr.kmeans_java;
+package edu.sjsu.cs.rr.kmeans;
 
+import edu.sjsu.cs.rr.kmeans.Kmeans;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

@@ -1,9 +1,9 @@
-package edu.sjsu.cs.rr.kmeans_java;
+package edu.sjsu.cs.rr.kmeans;
 
 import java.io.File;
 
-import edu.sjsu.cs.rr.kmeans_java.Kmeans.Distance;
-import edu.sjsu.cs.rr.kmeans_java.Kmeans.InitMethod;
+import edu.sjsu.cs.rr.kmeans.Centroid.InitMethod;
+import edu.sjsu.cs.rr.kmeans.Kmeans.Distance;
 
 public class KmeansInput {
 	private final int k;
