@@ -32,7 +32,7 @@ public class KmeansTest extends TestCase {
 	 * Test valid input data
 	 */
 	public void testValidInputData() {
-		String[] input = {"3", "5", ".1","euclidean","random","src/main/resources/iris-data.txt", "src/main/resources/output.txt"};
+		String[] input = {"3", "5", ".1","euclidean","random","src/main/resources/iris-data.txt", "src/main/resources/output1.txt"};
 		
 		try {
 			kmeans.validateInputData(input);
