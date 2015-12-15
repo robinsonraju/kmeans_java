@@ -1,6 +1,6 @@
 package edu.sjsu.cs.rr.kmeans;
 
-import edu.sjsu.cs.rr.kmeans.Kmeans;
+import cs286.Kmeans;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
